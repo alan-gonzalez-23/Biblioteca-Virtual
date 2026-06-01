@@ -179,12 +179,17 @@
     @media (max-width: 768px) {
       .topbar-menu { display: flex; }
 
+      #sidebar{
+        display: none;
+      }
+     
       #sidebar.open {
         position: fixed;
         left: -260px;
         width: 260px;
         transition: left .3s ease;
         z-index: 100;
+       display: flex;
       }
       #sidebar.open { left: 0; }
       #sidebar::after {
