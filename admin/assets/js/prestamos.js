@@ -1,4 +1,26 @@
 /* ============================================================
+   VALIDACIÓN DE DATOS
+   ============================================================ */
+
+// Validar si un email es válido
+function esEmailValido(email) {
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return regex.test(email);
+}
+
+// Validar si un DNI es válido (solo números, 7-8 dígitos)
+function esDNIValido(dni) {
+  const regex = /^\d{7,8}$/;
+  return regex.test(String(dni).replace(/\D/g, ''));
+}
+
+// Validar si un teléfono es válido (al menos 8 dígitos)
+function esTelefonoValido(tel) {
+  const soloNumeros = String(tel).replace(/\D/g, '');
+  return soloNumeros.length >= 8;
+}
+
+/* ============================================================
    PRÉSTAMOS
    ============================================================ */
 let prestamos = [];
@@ -160,8 +182,8 @@ function renderLoans() {
   empty.style.display = lista.length ? 'none' : 'block';
   if (!lista.length) return;
 
-  // Botón recordatorios: mostrar solo si hay préstamos activos/vencidos con email
-  const conEmail = lista.filter(p => p.estado !== 'devuelto' && p.email && p.email !== '—');
+  // Botón recordatorios: mostrar solo si hay préstamos activos/vencidos con email válido
+  const conEmail = lista.filter(p => p.estado !== 'devuelto' && p.email && p.email !== '—' && esEmailValido(p.email));
   const btnRecordatorio = document.getElementById('btn-recordatorios');
   if (btnRecordatorio) btnRecordatorio.style.display = conEmail.length ? 'inline-flex' : 'none';
 
@@ -212,7 +234,7 @@ async function marcarDevuelto(id) {
   await cargarPrestamos();
   renderLoans();
   if (typeof renderStats === 'function') renderStats();
-  await enviarRecordatorios();
+  mostrarNotificacion('✔ Préstamo marcado como devuelto', 'success');
 }
 
 function formatDate(str) {
@@ -305,8 +327,31 @@ async function registrarPrestamo() {
   const okDiv = document.getElementById('alta-alert-ok');
   errDiv.style.display = 'none'; okDiv.style.display = 'none';
 
+  // Validaciones mejoradas
   if (!nombre || !dni || !email || !curso) {
     errDiv.textContent = '⚠ Completá todos los datos del alumno.';
+    errDiv.style.display = 'block';
+    setTimeout(() => errDiv.style.display = 'none', 3500);
+    return;
+  }
+
+  if (!esDNIValido(dni)) {
+    errDiv.textContent = '⚠ El DNI debe contener 7 u 8 números.';
+    errDiv.style.display = 'block';
+    setTimeout(() => errDiv.style.display = 'none', 3500);
+    return;
+  }
+
+  if (!esEmailValido(email)) {
+    errDiv.textContent = '⚠ El email no es válido (ej: alumno@gmail.com).';
+    errDiv.style.display = 'block';
+    setTimeout(() => errDiv.style.display = 'none', 3500);
+    return;
+  }
+
+  const tel = document.getElementById('f-tel').value.trim();
+  if (tel && !esTelefonoValido(tel)) {
+    errDiv.textContent = '⚠ El teléfono debe contener al menos 8 dígitos.';
     errDiv.style.display = 'block';
     setTimeout(() => errDiv.style.display = 'none', 3500);
     return;
@@ -455,25 +500,64 @@ async function enviarRecordatorios() {
 
   const hoy = new Date();
   const pendientes = prestamos.filter(p =>
-    p.estado !== 'devuelto' && p.email && p.email !== '—'
+    p.estado !== 'devuelto' && 
+    p.email && 
+    p.email !== '—' &&
+    esEmailValido(p.email)  // ← VALIDACIÓN: solo emails válidos
   );
-  if (!pendientes.length) return;
-
-  for (const p of pendientes) {
-    const diasRestantes = Math.ceil((new Date(p.fechaDevolucion) - hoy) / 86400000);
-    const estadoTexto = diasRestantes < 0
-      ? `VENCIDO hace ${Math.abs(diasRestantes)} día(s)`
-      : `vence en ${diasRestantes} día(s) (${formatDate(p.fechaDevolucion)})`;
-
-    await emailjs.send(EMAILJS_SERVICE, EMAILJS_TEMPLATE, {
-      to_email:  p.email,
-      to_name:   p.nombre,
-      libro:     p.libro,
-      estado:    estadoTexto,
-    });
+  
+  if (!pendientes.length) {
+    mostrarNotificacion('⚠ No hay préstamos pendientes con emails válidos para recordar', 'warning');
+    return;
   }
 
-  mostrarNotificacion(`✅ Recordatorios enviados a ${pendientes.length} alumno(s)`, 'success');
+  // Agrupar por usuario para enviar un email por alumno (no por préstamo)
+  const porUsuario = {};
+  pendientes.forEach(p => {
+    if (!porUsuario[p.email]) {
+      porUsuario[p.email] = [];
+    }
+    porUsuario[p.email].push(p);
+  });
+
+  let enviados = 0;
+  let errores = 0;
+  
+  for (const email in porUsuario) {
+    const prestamosDel = porUsuario[email];
+    const primerPrestamo = prestamosDel[0];
+    
+    const diasRestantes = Math.ceil((new Date(primerPrestamo.fechaDevolucion) - hoy) / 86400000);
+    const estadoTexto = diasRestantes < 0
+      ? `VENCIDO hace ${Math.abs(diasRestantes)} día(s)`
+      : `vence en ${diasRestantes} día(s) (${formatDate(primerPrestamo.fechaDevolucion)})`;
+
+    // Crear lista de libros con sus estados
+    const librosLista = prestamosDel.map(p => {
+      const diasLibro = Math.ceil((new Date(p.fechaDevolucion) - hoy) / 86400000);
+      const estadoLibro = diasLibro < 0 ? 'VENCIDO' : 'Pendiente';
+      return `• ${p.libro} (${estadoLibro})`;
+    }).join('\n');
+
+    try {
+      await emailjs.send(EMAILJS_SERVICE, EMAILJS_TEMPLATE, {
+        to_email:  email,
+        to_name:   primerPrestamo.nombre,
+        libro:     librosLista,
+        estado:    estadoTexto,
+      });
+      enviados++;
+    } catch (error) {
+      console.error(`Error enviando email a ${email}:`, error);
+      errores++;
+    }
+  }
+
+  if (errores > 0) {
+    mostrarNotificacion(`✅ Enviados: ${enviados} | ❌ Errores: ${errores}`, 'warning');
+  } else {
+    mostrarNotificacion(`✅ Recordatorios enviados a ${enviados} alumno(s)`, 'success');
+  }
 }
 
 function mostrarNotificacion(msg, tipo = 'success') {
@@ -481,7 +565,7 @@ function mostrarNotificacion(msg, tipo = 'success') {
   if (!toast) {
     toast = document.createElement('div');
     toast.id = 'toast-notif';
-    toast.style.cssText = 'position:fixed;bottom:1.5rem;right:1.5rem;padding:.75rem 1.25rem;border-radius:.5rem;color:#fff;font-size:.9rem;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,.2);transition:opacity .3s;';
+    toast.style.cssText = 'position:fixed;bottom:1.5rem;right:1.5rem;padding:.75rem 1.25rem;border-radius:.5rem;color:#fff;font-size:.9rem;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,.2);transition:opacity 200ms;';
     document.body.appendChild(toast);
   }
   toast.textContent = msg;
