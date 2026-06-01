@@ -21,5 +21,5 @@ function showSection(name, el) {
 
 function toggleSidebar() {
   const sidebar = document.getElementById('sidebar');
-  sidebar.classList.toggle('active');
+  sidebar.classList.toggle('open');
 }
