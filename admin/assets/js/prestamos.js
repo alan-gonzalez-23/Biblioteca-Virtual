@@ -212,7 +212,7 @@ async function marcarDevuelto(id) {
   await cargarPrestamos();
   renderLoans();
   if (typeof renderStats === 'function') renderStats();
-  await enviarRecordatorios();
+  mostrarNotificacion('✔ Préstamo marcado como devuelto', 'success');
 }
 
 function formatDate(str) {
@@ -457,23 +457,53 @@ async function enviarRecordatorios() {
   const pendientes = prestamos.filter(p =>
     p.estado !== 'devuelto' && p.email && p.email !== '—'
   );
-  if (!pendientes.length) return;
-
-  for (const p of pendientes) {
-    const diasRestantes = Math.ceil((new Date(p.fechaDevolucion) - hoy) / 86400000);
-    const estadoTexto = diasRestantes < 0
-      ? `VENCIDO hace ${Math.abs(diasRestantes)} día(s)`
-      : `vence en ${diasRestantes} día(s) (${formatDate(p.fechaDevolucion)})`;
-
-    await emailjs.send(EMAILJS_SERVICE, EMAILJS_TEMPLATE, {
-      to_email:  p.email,
-      to_name:   p.nombre,
-      libro:     p.libro,
-      estado:    estadoTexto,
-    });
+  
+  if (!pendientes.length) {
+    mostrarNotificacion('⚠ No hay préstamos pendientes para recordar', 'warning');
+    return;
   }
 
-  mostrarNotificacion(`✅ Recordatorios enviados a ${pendientes.length} alumno(s)`, 'success');
+  // Agrupar por usuario para enviar un email por alumno (no por préstamo)
+  const porUsuario = {};
+  pendientes.forEach(p => {
+    if (!porUsuario[p.email]) {
+      porUsuario[p.email] = [];
+    }
+    porUsuario[p.email].push(p);
+  });
+
+  let enviados = 0;
+  for (const email in porUsuario) {
+    const prestamosDel = porUsuario[email];
+    const primerPrestamo = prestamosDel[0];
+    
+    const hoy = new Date();
+    const diasRestantes = Math.ceil((new Date(primerPrestamo.fechaDevolucion) - hoy) / 86400000);
+    const estadoTexto = diasRestantes < 0
+      ? `VENCIDO hace ${Math.abs(diasRestantes)} día(s)`
+      : `vence en ${diasRestantes} día(s) (${formatDate(primerPrestamo.fechaDevolucion)})`;
+
+    // Crear lista de libros con sus estados
+    const librosLista = prestamosDel.map(p => {
+      const diasLibro = Math.ceil((new Date(p.fechaDevolucion) - hoy) / 86400000);
+      const estadoLibro = diasLibro < 0 ? 'VENCIDO' : 'Pendiente';
+      return `• ${p.libro} (${estadoLibro})`;
+    }).join('\n');
+
+    try {
+      await emailjs.send(EMAILJS_SERVICE, EMAILJS_TEMPLATE, {
+        to_email:  email,
+        to_name:   primerPrestamo.nombre,
+        libro:     librosLista,
+        estado:    estadoTexto,
+      });
+      enviados++;
+    } catch (error) {
+      console.error(`Error enviando email a ${email}:`, error);
+    }
+  }
+
+  mostrarNotificacion(`✅ Recordatorios enviados a ${enviados} alumno(s)`, 'success');
 }
 
 function mostrarNotificacion(msg, tipo = 'success') {
@@ -481,7 +511,7 @@ function mostrarNotificacion(msg, tipo = 'success') {
   if (!toast) {
     toast = document.createElement('div');
     toast.id = 'toast-notif';
-    toast.style.cssText = 'position:fixed;bottom:1.5rem;right:1.5rem;padding:.75rem 1.25rem;border-radius:.5rem;color:#fff;font-size:.9rem;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,.2);transition:opacity .3s;';
+    toast.style.cssText = 'position:fixed;bottom:1.5rem;right:1.5rem;padding:.75rem 1.25rem;border-radius:.5rem;color:#fff;font-size:.9rem;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,.2);transition:opacity 200ms;';
     document.body.appendChild(toast);
   }
   toast.textContent = msg;
