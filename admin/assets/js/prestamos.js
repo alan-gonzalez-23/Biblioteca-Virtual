@@ -477,7 +477,6 @@ async function enviarRecordatorios() {
     const prestamosDel = porUsuario[email];
     const primerPrestamo = prestamosDel[0];
     
-    const hoy = new Date();
     const diasRestantes = Math.ceil((new Date(primerPrestamo.fechaDevolucion) - hoy) / 86400000);
     const estadoTexto = diasRestantes < 0
       ? `VENCIDO hace ${Math.abs(diasRestantes)} día(s)`
