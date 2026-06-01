@@ -463,9 +463,7 @@ async function enviarRecordatorios() {
     const diasRestantes = Math.ceil((new Date(p.fechaDevolucion) - hoy) / 86400000);
     const estadoTexto = diasRestantes < 0
       ? `VENCIDO hace ${Math.abs(diasRestantes)} día(s)`
-      : `vence en ${diasRestantes} día(s) (${formatDate(p.fechaDevolucion)})`;
-
-      alert(p.email);
+      : `vence en ${diasRestantes} día(s) (${formatDate(p.fechaDevolucion)})`
 
     await emailjs.send(EMAILJS_SERVICE, EMAILJS_TEMPLATE, {
       to_email:  p.email,
