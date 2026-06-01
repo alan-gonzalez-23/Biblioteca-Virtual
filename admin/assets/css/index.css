@@ -177,7 +177,7 @@
     }
 
     @media (max-width: 768px) {
-      .topbar-menu { display: flex; }
+      .topbar-menu { display: flex; flex-direction: row;}
 
       #sidebar{
         display: none;
