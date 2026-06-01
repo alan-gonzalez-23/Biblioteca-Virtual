@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Manual de Usuario · Bibliotecaria · Biblioteca EEST N°5</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --brand: #2563eb;
+      --brand-light: #dbeafe;
+      --text: #1e293b;
+      --muted: #64748b;
+      --bg: #f8fafc;
+      --white: #ffffff;
+      --border: #e2e8f0;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --radius: 14px;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    .layout { display: flex; min-height: 100vh; }
+
+    .sidebar {
+      width: 260px;
+      background: var(--white);
+      border-right: 1px solid var(--border);
+      padding: 2rem 1.25rem;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      flex-shrink: 0;
+    }
+
+    .sidebar-logo {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      margin-bottom: 2rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .sidebar-logo .badge {
+      width: 38px; height: 38px;
+      background: var(--brand);
+      color: #fff;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    .sidebar-logo h2 { font-size: .85rem; font-weight: 600; line-height: 1.3; }
+    .sidebar-logo p { font-size: .72rem; color: var(--muted); }
+
+    .sidebar-section { font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 1.25rem 0 .5rem; }
+
+    .sidebar a {
+      display: block;
+      padding: .45rem .75rem;
+      border-radius: 8px;
+      font-size: .85rem;
+      color: var(--text);
+      text-decoration: none;
+      transition: background .15s;
+    }
+    .sidebar a:hover { background: var(--brand-light); color: var(--brand); }
+
+    .badge-admin {
+      display: inline-block;
+      background: #e0f2fe;
+      color: #075985;
+      font-size: .7rem;
+      font-weight: 700;
+      padding: .2rem .6rem;
+      border-radius: 99px;
+      margin-bottom: 1.5rem;
+    }
+
+    .main {
+      flex: 1;
+      padding: 3rem 3.5rem;
+      max-width: 860px;
+    }
+
+    .cover {
+      background: linear-gradient(135deg, #0f172a 0%, #1e40af 60%, #3b82f6 100%);
+      border-radius: 20px;
+      padding: 3rem;
+      color: #fff;
+      margin-bottom: 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .cover::after {
+      content: 'B';
+      position: absolute;
+      right: 2rem; bottom: -1rem;
+      font-family: 'DM Serif Display', serif;
+      font-size: 10rem;
+      opacity: .08;
+      line-height: 1;
+    }
+    .cover .tag { font-size: .75rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; opacity: .7; margin-bottom: .75rem; }
+    .cover h1 { font-family: 'DM Serif Display', serif; font-size: 2.2rem; line-height: 1.2; margin-bottom: .75rem; }
+    .cover p { opacity: .85; font-size: 1rem; max-width: 520px; }
+    .cover .meta { margin-top: 1.75rem; display: flex; gap: 1.5rem; font-size: .8rem; opacity: .7; }
+
+    .section { margin-bottom: 3.5rem; scroll-margin-top: 2rem; }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: .75rem;
+      border-bottom: 2px solid var(--brand-light);
+    }
+    .section-num {
+      width: 36px; height: 36px;
+      background: var(--brand);
+      color: #fff;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700;
+      font-size: .9rem;
+      flex-shrink: 0;
+    }
+    .section-header h2 { font-family: 'DM Serif Display', serif; font-size: 1.4rem; }
+
+    .img-placeholder {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      height: 260px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: .5rem;
+      color: var(--brand);
+      font-size: .85rem;
+      font-weight: 500;
+      margin: 1.25rem 0;
+      padding: 0;
+      overflow: hidden;
+    }
+    .img-placeholder .icon { font-size: 2rem; }
+    .img-placeholder.sm { height: 180px; }
+    .img-placeholder.lg { height: 340px; }
+    .img-placeholder img { width: 100%; height: 100%; object-fit: contain; border-radius: var(--radius); }
+
+    .steps { display: flex; flex-direction: column; gap: 1rem; margin: 1.25rem 0; }
+    .step {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem 1.25rem;
+    }
+    .step-num {
+      width: 30px; height: 30px;
+      background: var(--brand);
+      color: #fff;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700;
+      font-size: .85rem;
+      flex-shrink: 0;
+      margin-top: .1rem;
+    }
+    .step-body strong { display: block; margin-bottom: .25rem; font-size: .95rem; }
+    .step-body p { font-size: .88rem; color: var(--muted); }
+
+    .callout {
+      border-radius: var(--radius);
+      padding: 1rem 1.25rem;
+      margin: 1.25rem 0;
+      display: flex;
+      gap: .75rem;
+      align-items: flex-start;
+      font-size: .88rem;
+    }
+    .callout.info { background: #eff6ff; border-left: 4px solid var(--brand); color: #1e40af; }
+    .callout.tip { background: #f0fdf4; border-left: 4px solid var(--success); color: #166534; }
+    .callout.warn { background: #fffbeb; border-left: 4px solid var(--warning); color: #92400e; }
+    .callout .icon { font-size: 1.1rem; flex-shrink: 0; margin-top: .05rem; }
+
+    table { width: 100%; border-collapse: collapse; margin: 1.25rem 0; font-size: .88rem; }
+    th { background: var(--brand-light); color: var(--brand); font-weight: 700; padding: .6rem 1rem; text-align: left; }
+    td { padding: .6rem 1rem; border-bottom: 1px solid var(--border); }
+    tr:last-child td { border-bottom: none; }
+
+    .card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1.25rem 0; }
+    .card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+    }
+    .card .card-icon { font-size: 1.5rem; margin-bottom: .5rem; }
+    .card h4 { font-size: .95rem; font-weight: 600; margin-bottom: .35rem; }
+    .card p { font-size: .83rem; color: var(--muted); }
+
+    p { margin-bottom: .75rem; font-size: .93rem; }
+    ul, ol { padding-left: 1.5rem; margin-bottom: .75rem; font-size: .93rem; }
+    li { margin-bottom: .35rem; }
+    strong { font-weight: 600; }
+
+    @media (max-width: 768px) {
+      .layout { flex-direction: column; }
+      .sidebar { width: 100%; height: auto; position: static; }
+      .main { padding: 1.5rem; }
+      .card-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="badge">B</div>
+      <div>
+        <h2>Biblioteca EEST N°5</h2>
+        <p>Manual de Administradores</p>
+      </div>
+    </div>
+
+    <span class="badge-admin">🛠️ Para bibliotecarias</span>
+
+    <div class="sidebar-section">Contenido</div>
+    
+    <a href="#intro">Introducción</a>
+    <a href="#panel">Panel administrativo</a>
+    <a href="#catalogo">Gestionar catálogo</a>
+    <a href="#usuarios">Usuarios y préstamos</a>
+    <a href="#inventario">Inventario y stock</a>
+    <a href="#estadisticas">Estadísticas</a>
+    <a href="#seguridad">Seguridad</a>
+    <a href="#faq">Preguntas frecuentes</a>
+
+    <div class="sidebar-section">Otros manuales</div>
+    <a href="manual-visitante.html">👤 Manual Visitante</a>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- COVER -->
+    <div class="cover">
+      <div class="tag">Biblioteca EEST N°5 · Ranelagh, Berazategui</div>
+      <h1>Manual de la Bibliotecaria</h1>
+      <p>Guía práctica para administrar el catálogo, gestionar préstamos, actualizar stock y mantener el sistema de la biblioteca.</p>
+      <div class="meta">
+        <span>📅 2025</span>
+        <span>🔒 Acceso restringido</span>
+        <span>🏫 EEST N°5</span>
+      </div>
+    </div>
+
+    <!-- 1. INTRODUCCIÓN -->
+    <div class="section" id="intro">
+      <div class="section-header">
+        <div class="section-num">1</div>
+        <h2>Introducción</h2>
+      </div>
+      <p>Este manual está diseñado para las bibliotecarias y administradoras del sistema. Contiene los pasos para iniciar sesión, cargar nuevos libros, actualizar categorías, supervisar préstamos y consultar estadísticas.</p>
+      <p>Usá este documento como referencia rápida cada vez que necesites trabajar en la administración del sitio web de la biblioteca.</p>
+
+      <div class="callout info">
+        <span class="icon">ℹ️</span>
+        <span>Todos los cambios realizados en el panel de administración se reflejan en el sitio público de visitante. Asegurate de revisar el stock y la disponibilidad antes de guardar.</span>
+      </div>
+
+      <div class="img-placeholder lg">
+        <img src="assets/img/admin vista general.PNG" alt="Vista general del panel administrativo">
+        <span>Captura de pantalla — Vista general del panel administrativo</span>
+      </div>
+
+      <div class="img-placeholder sm">
+        <img src="assets/img/admin sidebar.PNG" alt="Barra lateral del panel administrativo">
+        <span>Captura de pantalla — Barra lateral del panel administrativo</span>
+      </div>
+    </div>
+
+    <!-- 2. PANEL ADMINISTRATIVO -->
+    <div class="section" id="panel">
+      <div class="section-header">
+        <div class="section-num">2</div>
+        <h2>Panel administrativo</h2>
+      </div>
+      <p>El acceso administrativo se realiza desde el panel privado. Ingresá con tu usuario y contraseña de bibliotecaria para ver todas las opciones de gestión.</p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <strong>Ingresar a la administración</strong>
+            <p>Accedé a <strong>admin/login.html</strong> desde el navegador. Ese es el punto de entrada para el personal autorizado.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <strong>Completar credenciales</strong>
+            <p>Escribí tu usuario y contraseña. Si olvidaste tus datos, contactá al responsable de la red para restablecerlos.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <strong>Acceder al menú</strong>
+            <p>Al iniciar sesión, verás el menú con todas las opciones: libros, categorías, usuarios, préstamos, inventario y estadísticas.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout tip">
+        <span class="icon">💡</span>
+        <span>Cierra sesión al finalizar tu trabajo. No dejes la sesión abierta en computadoras compartidas.</span>
+      </div>
+    </div>
+
+    <!-- 3. GESTIONAR CATÁLOGO -->
+    <div class="section" id="catalogo">
+      <div class="section-header">
+        <div class="section-num">3</div>
+        <h2>Gestionar catálogo</h2>
+      </div>
+      <p>El catálogo se organiza en libros y categorías. Aquí podés agregar, editar y eliminar títulos, además de crear y modificar categorías temáticas.</p>
+
+      <div class="img-placeholder lg">
+        <img src="assets/img/admin vista general.PNG" alt="Vista general del panel administrativo">
+        <span>Captura de pantalla — Opciones del panel administrativo</span>
+      </div>
+
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-icon">➕</div>
+          <h4>Agregar libro</h4>
+          <p>Completá todos los campos: título, autor, categoría, stock, año, editorial y enlace a PDF/Drive si corresponde.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">✏️</div>
+          <h4>Editar libro</h4>
+          <p>Actualizá el stock, la descripción o la versión digital cuando cambie la información.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">🗑️</div>
+          <h4>Eliminar libro</h4>
+          <p>Eliminá solo registros duplicados o erróneos. Confirma antes de borrar.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">🏷️</div>
+          <h4>Gestionar categorías</h4>
+          <p>Crea, edita o elimina categorías temáticas para organizar mejor el catálogo.</p>
+        </div>
+      </div>
+
+      <p><strong>Campos al agregar un libro:</strong></p>
+      <table>
+        <thead>
+          <tr><th>Campo</th><th>Descripción</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Título</td><td>Nombre completo del libro.</td></tr>
+          <tr><td>Autor</td><td>Autor o autores del libro.</td></tr>
+          <tr><td>Categoría</td><td>Asignalo para que aparezca en los filtros.</td></tr>
+          <tr><td>Stock</td><td>Cantidad de ejemplares disponibles.</td></tr>
+          <tr><td>Enlace digital</td><td>URL a PDF/Drive si existe versión digital.</td></tr>
+        </tbody>
+      </table>
+
+      <div class="img-placeholder">
+        <img src="assets/img/admin gestion categorias.PNG" alt="Gestión de categorías">
+        <span>Captura de pantalla — Gestión de categorías</span>
+      </div>
+
+      <div class="callout info">
+        <span class="icon">ℹ️</span>
+        <span>Si cargás un libro con stock 0, explicá si es solo referencia o si falta el ejemplar físico.</span>
+      </div>
+
+      <div class="callout tip">
+        <span class="icon">💡</span>
+        <span>Mantené categorías simples: Ciencias, Literatura, Informática, Historia, Matemáticas, y una para material diverso.</span>
+      </div>
+    </div>
+
+    <!-- 4. USUARIOS Y PRÉSTAMOS -->
+    <div class="section" id="usuarios">
+      <div class="section-header">
+        <div class="section-num">4</div>
+        <h2>Usuarios y préstamos</h2>
+      </div>
+      <p>Desde el panel administrativo podés ver los usuarios registrados, consultar préstamos activos y registrar nuevas solicitudes de préstamo.</p>
+
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-icon">👥</div>
+          <h4>Gestionar usuarios</h4>
+          <p>Verificá datos de alumnos y docentes registrados. Asegurate de que la información esté completa y actualizada.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">📄</div>
+          <h4>Registrar préstamos</h4>
+          <p>Agregá préstamos nuevos con la fecha de salida y la fecha de devolución prevista.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">🔁</div>
+          <h4>Registrar devoluciones</h4>
+          <p>Marcá como devuelto el ejemplar cuando ingrese a la biblioteca y actualizá el stock.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">⏳</div>
+          <h4>Controlar atrasos</h4>
+          <p>Revisá la lista de préstamos vencidos y contactá a los usuarios para solicitar la devolución.</p>
+        </div>
+      </div>
+
+      <div class="img-placeholder">
+        <img src="assets/img/admin gestion usuarios.PNG" alt="Gestión de usuarios en el panel administrativo">
+        <span>Captura de pantalla — Gestión de usuarios</span>
+      </div>
+
+      <div class="img-placeholder">
+        <img src="assets/img/admin lista usuarios.PNG" alt="Lista de usuarios registrados en el panel administrativo">
+        <span>Captura de pantalla — Lista de usuarios registrados</span>
+      </div>
+
+      <div class="img-placeholder">
+        <img src="assets/img/admin gestion prestamos.PNG" alt="Gestión de préstamos en el panel administrativo">
+        <span>Captura de pantalla — Gestión de préstamos</span>
+      </div>
+
+      <div class="img-placeholder">
+        <img src="assets/img/admin alta prestamo.PNG" alt="Alta de préstamo en el panel administrativo">
+        <span>Captura de pantalla — Alta de préstamo</span>
+      </div>
+
+      <table>
+        <thead>
+          <tr><th>Acción</th><th>Descripción</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Registrar préstamo</td><td>Asignar libro a un usuario con fechas de salida y devolución.</td></tr>
+          <tr><td>Actualizar devolución</td><td>Marcar el libro como devuelto y aumentar el stock.</td></tr>
+          <tr><td>Cancelar préstamo</td><td>Eliminar el registro si había un error en el ingreso.</td></tr>
+          <tr><td>Enviar aviso</td><td>Informar al usuario sobre devoluciones próximas o retrasadas.</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout warn">
+        <span class="icon">⚠️</span>
+        <span>Cuando completes una devolución, verificá el estado del libro antes de volver a asignarlo. Si el libro está dañado, registralo como no disponible.</span>
+      </div>
+    </div>
+
+    <!-- 5. INVENTARIO Y STOCK -->
+    <div class="section" id="inventario">
+      <div class="section-header">
+        <div class="section-num">5</div>
+        <h2>Inventario y stock</h2>
+      </div>
+      <p>El inventario permite ver el total de ejemplares, las existencias actuales y los libros que requieren reposición o seguimiento.</p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <strong>Revisar stock</strong>
+            <p>Consultá rápidamente los libros con bajo stock o sin unidades disponibles.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <strong>Actualizar cantidades</strong>
+            <p>Cada vez que ingresa un libro nuevo o se daña uno, ajustá la cantidad en inventario.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <strong>Planificar reposición</strong>
+            <p>Identificá títulos faltantes para reponer antes de que queden agotados.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="img-placeholder sm">
+        <img src="assets/img/admin gestion inventario.PNG" alt="Gestión de inventario en el panel administrativo">
+        <span>Captura de pantalla — Control de inventario</span>
+      </div>
+
+      <div class="callout tip">
+        <span class="icon">💡</span>
+        <span>Actualizá el inventario al final del día para mantener la información sincronizada con los préstamos y devoluciones.</span>
+      </div>
+    </div>
+
+    <!-- 6. ESTADÍSTICAS -->
+    <div class="section" id="estadisticas">
+      <div class="section-header">
+        <div class="section-num">6</div>
+        <h2>Estadísticas</h2>
+      </div>
+      <p>Las estadísticas ofrecen una visión general del funcionamiento de la biblioteca: libros prestados, devoluciones, usuarios activos y categorías más usadas.</p>
+
+      <table>
+        <thead>
+          <tr><th>Indicador</th><th>Qué muestra</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>📚 Libros prestados</td><td>Cantidad de ejemplares actualmente en préstamo.</td></tr>
+          <tr><td>⏱️ Devoluciones a tiempo</td><td>Porcentaje de préstamos entregados dentro del plazo.</td></tr>
+          <tr><td>👥 Usuarios activos</td><td>Usuarios que realizaron al menos un préstamo en el último mes.</td></tr>
+          <tr><td>🏷️ Categorías populares</td><td>Las categorías con más búsquedas o préstamos.</td></tr>
+        </tbody>
+      </table>
+
+      <div class="img-placeholder lg">
+        <img src="assets/img/admin estadisticas.PNG" alt="Estadísticas en el panel administrativo">
+        <span>Captura de pantalla — Estadísticas</span>
+      </div>
+
+      <div class="callout info">
+        <span class="icon">ℹ️</span>
+        <span>Usá las estadísticas para decidir qué libros reponer, qué categorías ampliar y cómo mejorar la rotación del material.</span>
+      </div>
+    </div>
+
+    <!-- 7. SEGURIDAD -->
+    <div class="section" id="seguridad">
+      <div class="section-header">
+        <div class="section-num">7</div>
+        <h2>Seguridad</h2>
+      </div>
+      <p>Mantené el sistema protegido siguiendo estas prácticas de seguridad básicas.</p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <strong>Cierra sesión siempre</strong>
+            <p>Logout al finalizar tu trabajo para proteger los datos del sistema.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <strong>Contraseña segura</strong>
+            <p>No la compartas. Cambiala si sospechás que fue comprometida.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <strong>Haz respaldo periódico</strong>
+            <p>Guardá copias del inventario y registros de préstamos en archivo seguro.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout warn">
+        <span class="icon">⚠️</span>
+        <span>Si detectás accesos desconocidos o cambios no autorizados, avisá inmediatamente al responsable de tecnología.</span>
+      </div>
+    </div>
+
+    <!-- 8. FAQ -->
+    <div class="section" id="faq">
+      <div class="section-header">
+        <div class="section-num">8</div>
+        <h2>Preguntas frecuentes</h2>
+      </div>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">?</div>
+          <div class="step-body">
+            <strong>¿Cómo recupero mi contraseña?</strong>
+            <p>Consultá con la bibliotecaria responsable o con el soporte técnico de la escuela para restablecerla.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">?</div>
+          <div class="step-body">
+            <strong>¿Puedo editar un libro si ya tiene préstamos activos?</strong>
+            <p>Sí, podés actualizar datos como descripción o enlace digital. Evitá cambiar el stock sin verificar el préstamo activo.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">?</div>
+          <div class="step-body">
+            <strong>¿Cómo agrego un libro con versión digital?</strong>
+            <p>En la sección de libros, completá el enlace a PDF/Drive y asegurate de que la URL sea accesible para los visitantes si corresponde.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">?</div>
+          <div class="step-body">
+            <strong>¿Qué hacer si un libro está dañado?</strong>
+            <p>Registrá la devolución, bajá el stock y marcá el estado del libro como "no disponible" hasta repararlo o reemplazarlo.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">?</div>
+          <div class="step-body">
+            <strong>¿Dónde consulto las estadísticas de uso?</strong>
+            <p>En la sección de estadísticas del panel administrativo encontrarás los indicadores de préstamos, devoluciones y categorías más consultadas.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+</body>
+</html>

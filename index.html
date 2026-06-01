@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BibliotecaEEST N°5 · Ranelagh</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<!-- ═══════════════════ NAVBAR ═══════════════════ -->
+<nav id="navbar" role="navigation" aria-label="Navegación principal">
+  <a class="nav-logo" href="#" aria-label="Inicio BibliotecaEEST N°5">
+    <div class="nav-logo-icon" aria-hidden="true">B</div>
+    <span class="nav-logo-text">BibliotecaEEST N°5</span>
+  </a>
+
+  <div class="nav-links" role="menubar">
+    <a class="nav-link" href="#" role="menuitem">Inicio</a>
+    <a class="nav-link" href="#categorias" role="menuitem">Categorías</a>
+    <a class="nav-link" href="#destacados" role="menuitem">Catálogo</a>
+    <a class="nav-link" href="#como-funciona" role="menuitem">¿Cómo funciona?</a>
+  </div>
+
+  <div class="nav-right">
+    <button class="btn-hamburger" id="hamburger-btn" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobile-menu" onclick="toggleMenu()">☰</button>
+  </div>
+</nav>
+
+<!-- Mobile menu -->
+<div id="mobile-menu" role="menu" aria-label="Menú móvil">
+  <a class="mobile-link" href="#" role="menuitem">Inicio</a>
+  <a class="mobile-link" href="#categorias" role="menuitem">Categorías</a>
+  <a class="mobile-link" href="#destacados" role="menuitem">Catálogo</a>
+  <a class="mobile-link" href="#como-funciona" role="menuitem">¿Cómo funciona?</a>
+</div>
+
+<!-- ═══════════════════ HERO ═══════════════════ -->
+<section id="hero" aria-label="Sección principal">
+  <div class="blob blob-1" aria-hidden="true"></div>
+  <div class="blob blob-2" aria-hidden="true"></div>
+  <div class="blob blob-3" aria-hidden="true"></div>
+
+  <div class="hero-badge" aria-label="Sistema de gestión">
+    <span>✦</span> EESTN5 · Biblioteca Escolar Digital
+  </div>
+
+  <h1 class="hero-h1">
+    <span class="dark">El futuro del aprendizaje<br>comienza </span><span class="accent">en nuestra</span><br>
+    <span class="gradient">biblioteca</span>
+  </h1>
+
+  <p class="hero-sub">
+    Accedé a miles de títulos, gestioná préstamos en tiempo real y explorá categorías desde cualquier dispositivo.
+  </p>
+
+  <div class="search-bar" role="search">
+    <div class="search-bar-inner">
+      <span aria-hidden="true" style="color:#94a3b8;font-size:1.1rem;">🔍</span>
+      <input
+        type="text"
+        id="search-input"
+        placeholder="Historia de Roma, algoritmos, Borges…"
+        aria-label="Buscar libros"
+        oninput="doSearch(this.value)"
+        onkeydown="if(event.key==='Enter') doSearch(this.value)"
+      />
+    </div>
+    <button class="search-bar-btn" onclick="doSearch(document.getElementById('search-input').value)" aria-label="Buscar">
+      Buscar →
+    </button>
+  </div>
+
+  <div id="search-results" role="region" aria-live="polite" aria-label="Resultados de búsqueda"></div>
+</section>
+
+<!-- ═══════════════════ CATEGORÍAS 3D ═══════════════════ -->
+<section id="categorias" aria-label="Explorar por categoría">
+  <div class="section-eyebrow">
+    <span>Explorar por Categoría</span>
+    <div class="eyebrow-line" aria-hidden="true"></div>
+  </div>
+
+  <div class="carousel-wrap" role="region" aria-label="Carrusel de categorías" aria-roledescription="carrusel">
+    <div class="carousel-track" id="carousel-track"></div>
+  </div>
+
+  <div class="carousel-nav">
+    <button class="carousel-arrow" onclick="carouselPrev()" aria-label="Categoría anterior">←</button>
+    <div id="carousel-dots" style="display:flex;gap:.5rem;" role="tablist" aria-label="Indicadores de categoría"></div>
+    <button class="carousel-arrow" onclick="carouselNext()" aria-label="Categoría siguiente">→</button>
+  </div>
+</section>
+
+<!-- ═══════════════════ CÓMO FUNCIONA ═══════════════════ -->
+<section id="como-funciona">
+  <div class="section-eyebrow">
+    <span>¿Cómo Funciona?</span>
+    <div class="eyebrow-line" aria-hidden="true"></div>
+  </div>
+  <div class="steps-wrap" style="margin-top:3rem;">
+    <div class="step">
+      <div class="step-icon" style="background:linear-gradient(135deg,#dbeafe,#bfdbfe);" aria-hidden="true">🔍</div>
+      <div class="step-num" aria-hidden="true">1</div>
+      <div class="step-title">Buscá un libro</div>
+      <p class="step-desc">Usá el buscador para encontrar el título que necesitás por nombre, autor o categoría en segundos.</p>
+    </div>
+    <div class="step-arrow" aria-hidden="true">→</div>
+    <div class="step">
+      <div class="step-icon" style="background:linear-gradient(135deg,#dcfce7,#bbf7d0);" aria-hidden="true">📋</div>
+      <div class="step-num" aria-hidden="true">2</div>
+      <div class="step-title">Solicitá el préstamo</div>
+      <p class="step-desc">Registrá tu solicitud con tus datos de alumno. La bibliotecaria confirma la disponibilidad.</p>
+    </div>
+    <div class="step-arrow" aria-hidden="true">→</div>
+    <div class="step">
+      <div class="step-icon" style="background:linear-gradient(135deg,#fef9c3,#fde68a);" aria-hidden="true">🏫</div>
+      <div class="step-num" aria-hidden="true">3</div>
+      <div class="step-title">Retirá en biblioteca</div>
+      <p class="step-desc">Pasá por la biblioteca con tu DNI en el horario acordado y llevate el libro a casa.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ CATÁLOGO ═══════════════════ -->
+<section id="destacados">
+  <div class="catalogo-header">
+    <div>
+      <div style="font-size:.78rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.4rem;">Colección completa</div>
+      <h2 class="section-title">Catálogo de Libros</h2>
+    </div>
+    <span class="catalogo-count" id="catalogo-count"></span>
+  </div>
+  <div class="catalogo-filtros">
+    <div class="catalogo-search">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="catalogo-input" placeholder="Buscar por título, autor o palabra clave…" oninput="filtrarCatalogo()" />
+    </div>
+    <select class="catalogo-select" id="catalogo-cat" onchange="filtrarCatalogo()">
+      <option value="">Todas las categorías</option>
+    </select>
+    <select class="catalogo-select" id="catalogo-stock" onchange="filtrarCatalogo()">
+      <option value="">Todos</option>
+      <option value="disponible">Con stock</option>
+      <option value="sin">Sin stock</option>
+    </select>
+  </div>
+  <div class="books-grid" id="books-grid"></div>
+  <div class="catalogo-paginacion" id="catalogo-paginacion"></div>
+</section>
+
+<!-- ═══════════════════ ESTADÍSTICAS ═══════════════════ -->
+<section id="estadisticas" aria-label="Estadísticas generales">
+  <div class="stats-bg-blob stats-bg-blob-1" aria-hidden="true"></div>
+  <div class="stats-bg-blob stats-bg-blob-2" aria-hidden="true"></div>
+  <div class="section-eyebrow" style="position:relative;z-index:1;">
+    <span style="color:rgba(255,255,255,.5);">La biblioteca en números</span>
+    <div class="eyebrow-line" aria-hidden="true"></div>
+  </div>
+  <div class="stats-grid" style="margin-top:3rem;" role="list">
+    <div class="stat-item" role="listitem">
+      <div class="stat-value" id="stat-libros">—</div>
+      <div class="stat-label">Ejemplares disponibles</div>
+    </div>
+    <div class="stat-item" role="listitem">
+      <div class="stat-value" id="stat-usuarios">—</div>
+      <div class="stat-label">Alumnos registrados</div>
+    </div>
+    <div class="stat-item" role="listitem">
+      <div class="stat-value" id="stat-devolucion">—</div>
+      <div class="stat-label">Devoluciones a tiempo</div>
+    </div>
+    <div class="stat-item" role="listitem">
+      <div class="stat-value" id="stat-categorias">—</div>
+      <div class="stat-label">Categorías temáticas</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ FOOTER ═══════════════════ -->
+<footer role="contentinfo">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="logo-wrap">
+        <div class="logo-icon" aria-hidden="true">B</div>
+        <span class="logo-text">BibliotecaEEST N°5</span>
+      </div>
+      <p>Biblioteca digital de la Escuela de Educación Secundaria Técnica N°5 de Berazategui. Promovemos el acceso al conocimiento para toda la comunidad educativa.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Navegación</h4>
+      <ul>
+        <li><a href="#">Inicio</a></li>
+        <li><a href="#categorias">Categorías</a></li>
+        <li><a href="#destacados">Catálogo</a></li>
+        <li><a href="#como-funciona">¿Cómo funciona?</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contacto</h4>
+      <ul>
+        <li><span>📍 Calle 316 S/N esq. 368 B</span></li>
+        <li><span>Barrio Luz, Ranelagh</span></li>
+        <li><span>Berazategui · B1886DUH</span></li>
+        <li><span>📞 4258-4356</span></li>
+        <li><a href="mailto:eestn5berazategui@gmail.com">eestn5berazategui@gmail.com</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 EEST N°5 · Todos los derechos reservados</p>
+    <div class="inet-badge">🏛 Instituto Nacional de Educación Técnica</div>
+  </div>
+</footer>
+
+<!-- ═══════════════════ SCRIPTS ═══════════════════ -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/script.js"></script>
+<script src="assets/js/db.js"></script>
+</body>
+</html>
+
+
+<!-- facundoalanfafa@gmail.com   eest5ranelagh    -->

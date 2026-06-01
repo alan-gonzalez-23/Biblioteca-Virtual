@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Panel Bibliotecaria · EEST N°5</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="assets/css/syle.css">
+  <link rel="stylesheet" href="assets/css/index.css">
+</head>
+<body>
+
+<!-- ============================= APP ============================= -->
+<div id="app">
+  <!-- SIDEBAR -->
+  <aside id="sidebar">
+    <div class="sidebar-logo">
+      <div class="badge">B</div>
+      <h2>Biblioteca EEST N°5</h2>
+      <p>Panel de Control</p>
+    </div>
+    <nav>
+      <div class="nav-section-label">Gestión</div>
+      <div class="nav-item active" onclick="showSection('prestamos', this)">
+        <span class="icon">📋</span> Gestión de Préstamos
+      </div>
+      <div class="nav-item" onclick="showSection('alta', this)">
+        <span class="icon">➕</span> Alta de Préstamo
+      </div>
+      <div class="nav-item" onclick="showSection('usuarios', this)">
+        <span class="icon">👥</span> Gestión de Usuarios
+      </div>
+      <div class="nav-section-label">Catálogo</div>
+      <div class="nav-item" onclick="showSection('inventario', this)">
+        <span class="icon">📚</span> Inventario de Libros
+      </div>
+      <div class="nav-item" onclick="showSection('categorias', this)">
+        <span class="icon">🏷</span> Categorías
+      </div>
+      <div class="nav-section-label">Informes</div>
+      <div class="nav-item" onclick="showSection('estadisticas', this)">
+        <span class="icon">📊</span> Estadísticas
+      </div>
+      <div class="nav-section-label">Sitio</div>
+      <div class="nav-item" onclick="window.open('../','_blank')">
+        <span class="icon">🌐</span> Ver Catálogo Público
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-chip">
+        <div class="user-avatar" id="sidebar-user-avatar">BI</div>
+        <div>
+          <div class="name" id="sidebar-user-name">Bibliotecaria</div>
+          <div class="role" id="sidebar-user-email">user@mail.com</div>
+        </div>
+      </div>
+      <button class="btn-logout" onclick="doLogout()">⬅ Cerrar sesión</button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div id="main">
+    <div class="topbar">
+      <h1 id="topbar-title">Gestión de Préstamos</h1>
+      <span class="topbar-date" id="topbar-date"></span>
+      <button class="topbar-menu" onclick="toggleSidebar()" id="menu-btn" aria-label="Abrir menú">☰</button>
+    </div>
+    <div class="page-content">
+
+      <!-- ===================== PRÉSTAMOS ===================== -->
+      <div class="section active" id="sec-prestamos">
+        <div class="filter-bar">
+          <div class="search-wrap">
+            <span class="search-icon">🔍</span>
+            <input class="form-input" id="loan-search" type="text" placeholder="Buscar alumno o libro…" oninput="renderLoans()" />
+          </div>
+          <button id="btn-recordatorios" class="btn btn-primary" style="display:none;" onclick="enviarRecordatorios()">📧 Enviar recordatorios</button>
+          <select class="form-input form-select" id="loan-filter" style="max-width:160px;" onchange="renderLoans()">
+            <option value="todos">Todos los estados</option>
+            <option value="activo">Activo</option>
+            <option value="vencido">Vencido</option>
+            <option value="devuelto">Devuelto</option>
+          </select>
+          <select class="form-input form-select" id="loan-sort" style="max-width:180px;" onchange="renderLoans()">
+            <option value="fecha-desc">Más recientes primero</option>
+            <option value="fecha-asc">Más antiguos primero</option>
+            <option value="nombre">Por nombre A–Z</option>
+          </select>
+        </div>
+        <div id="loan-list" style="display:flex;flex-direction:column;gap:.75rem;"></div>
+        <p id="loan-empty" style="color:var(--muted);text-align:center;padding:3rem;display:none;">No se encontraron préstamos.</p>
+      </div>
+
+      <!-- ===================== ALTA PRÉSTAMO ===================== -->
+      <div class="section" id="sec-alta">
+        <div class="card" style="max-width:720px;margin-left:auto;margin-right:auto;">
+          <h2 style="font-family:'DM Serif Display',serif;font-size:1.25rem;margin-bottom:1.5rem;">Registrar nuevo préstamo</h2>
+          <div id="alta-alert-ok" class="alert alert-success">✅ Préstamo registrado correctamente.</div>
+          <div id="alta-alert-err" class="alert alert-error">⚠ Completá todos los campos obligatorios.</div>
+
+          <p style="font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:1rem;">Datos del alumno</p>
+          <div class="form-grid" style="margin-bottom:1rem;">
+            <div>
+              <label class="form-label">Nombre y Apellido *</label>
+              <input class="form-input" id="f-nombre" type="text" placeholder="Ej: Lucía Méndez" />
+            </div>
+            <div>
+              <label class="form-label">DNI *</label>
+              <input class="form-input" id="f-dni" type="text" placeholder="Ej: 45.123.456" />
+            </div>
+          </div>
+          <div class="form-grid" style="margin-bottom:1rem;">
+            <div>
+              <label class="form-label">Teléfono</label>
+              <input class="form-input" id="f-tel" type="text" placeholder="Ej: 11-2345-6789" />
+            </div>
+            <div>
+              <label class="form-label">Correo electrónico *</label>
+              <input class="form-input" id="f-email" type="email" placeholder="alumno@gmail.com" />
+            </div>
+          </div>
+          <div style="margin-bottom:1rem;">
+            <label class="form-label">Domicilio</label>
+            <input class="form-input" id="f-dom" type="text" placeholder="Calle, número, localidad" />
+          </div>
+          <div class="form-grid" style="margin-bottom:1.75rem;">
+            <div>
+              <label class="form-label">Curso *</label>
+              <select class="form-input form-select" id="f-curso">
+                <option value="">Seleccioná curso</option>
+                <option>1° A</option><option>1° B</option>
+                <option>2° A</option><option>2° B</option>
+                <option>3° A</option><option>3° B</option>
+                <option>4° A</option><option>4° B</option>
+                <option>5° A</option><option>5° B</option>
+                <option>6° A</option><option>6° B</option>
+                <option>7° A</option><option>7° B</option>
+              </select>
+            </div>
+            <div>
+              <label class="form-label">Año lectivo *</label>
+              <select class="form-input form-select" id="f-anio">
+                <option>2025</option><option>2026</option>
+              </select>
+            </div>
+          </div>
+
+          <p style="font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:1rem;">Libros a prestar</p>
+
+          <div id="filas-prestamo" style="display:flex;flex-direction:column;gap:.75rem;"></div>
+
+          <button class="btn btn-ghost" style="margin-top:.75rem;" onclick="agregarFilaPrestamo()">➕ Agregar otro libro</button>
+
+          <div style="display:flex;gap:.75rem;margin-top:1.25rem;">
+            <button class="btn btn-primary" onclick="registrarPrestamo()">✔ Registrar Préstamo</button>
+            <button class="btn btn-ghost" onclick="limpiarFormulario()">↺ Limpiar</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================== INVENTARIO ===================== -->
+
+
+
+      <div class="section" id="sec-inventario">
+        <div class="card" style="margin-bottom:1.5rem;">
+  <h2 style="font-family:'DM Serif Display',serif;font-size:1.1rem;margin-bottom:1rem;">Agregar nuevo libro</h2>
+  <div id="inv-alert" class="alert alert-success" style="display:none;"></div>
+  <div style="display:flex;gap:.75rem;flex-wrap:wrap;">
+    <div style="flex:2;min-width:180px;">
+      <label class="form-label">Título *</label>
+      <input class="form-input" id="inv-titulo" type="text" placeholder="Título del libro" />
+    </div>
+    <div style="flex:1.5;min-width:140px;">
+      <label class="form-label">Autor *</label>
+      <input class="form-input" id="inv-autor" type="text" placeholder="Apellido, Nombre" />
+    </div>
+    <div style="flex:1;min-width:120px;">
+      <label class="form-label">Categoría</label>
+      <select class="form-input form-select" id="inv-cat">
+        <option value="Ciencias">Ciencias</option>
+        <option value="Literatura">Literatura</option>
+        <option value="Informática">Informática</option>
+        <option value="Historia">Historia</option>
+        <option value="Matemáticas">Matemáticas</option>
+      </select>
+    </div>
+    <div style="flex:.7;min-width:90px;">
+      <label class="form-label">Stock</label>
+      <!-- Agregamos un evento para escuchar cuando cambie la cantidad -->
+      <input class="form-input" id="inv-stock" type="number" min="1" value="1" oninput="generarCamposISBN()" />
+    </div>
+  </div>
+
+  <!-- NUEVO CONTENEDOR: Aquí se dibujarán las cajas para cada código físico -->
+  <div id="inv-contenedor-isbns" style="margin-top: 1rem; display: flex; flex-direction: column; gap: 0.5rem;">
+    <div>
+      <label class="form-label">Código / ISBN del Ejemplar 1</label>
+      <input class="form-input clase-isbn-dinamica" type="text" placeholder="Ej: 978-0553802023 u otro código" />
+    </div>
+  </div>
+
+  <div style="display:flex;gap:.75rem;flex-wrap:wrap;margin-top:1rem;">
+    <div style="flex:2;min-width:200px;">
+      <label class="form-label">Link PDF / Drive</label>
+      <input class="form-input" id="inv-url" type="url" placeholder="https://drive.google.com/..." />
+    </div>
+    <div style="flex:3;min-width:200px;">
+      <label class="form-label">Palabras clave</label>
+      <input class="form-input" id="inv-keywords" type="text" placeholder="Ej: guerra, historia, siglo XX" />
+    </div>
+  </div>
+
+  <div style="margin-top:1rem;">
+    <!-- El botón ahora llama a la función principal que lee todo el formulario -->
+    <button class="btn btn-primary" onclick="procesarGuardadoLibro()">➕ Agregar al inventario</button>
+  </div>
+</div>
+
+
+        <!-- Buscador inventario -->
+        <div class="filter-bar" style="margin-bottom:1rem;">
+          <div class="search-wrap" style="max-width:320px;">
+            <span class="search-icon">🔍</span>
+            <input class="form-input" id="inv-search" type="text" placeholder="Buscar en inventario…" oninput="renderInventario()" />
+          </div>
+          <select class="form-input form-select" id="inv-cat-filter" style="max-width:160px;" onchange="renderInventario()">
+            <option value="">Todas las categorías</option>
+            <option>Ciencias</option><option>Literatura</option>
+            <option>Informática</option><option>Historia</option><option>Matemáticas</option>
+          </select>
+        </div>
+
+        <div class="card" style="padding:0;overflow:hidden;">
+          <table class="data-table" id="inv-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th>#</th>
+                <th>Título</th>
+                <th>Autor</th>
+                <th>Categoría</th>
+                <th>Stock</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="inv-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ===================== USUARIOS ===================== -->
+      <div class="section" id="sec-usuarios">
+        <div class="card" style="margin-bottom:1.5rem;">
+          <h2 style="font-family:'DM Serif Display',serif;font-size:1.25rem;margin-bottom:1.5rem;">Registrar usuario</h2>
+          <div class="form-grid" style="margin-bottom:1rem;">
+            <div>
+              <label class="form-label">Nombre *</label>
+              <input class="form-input" id="user-nombre" type="text" placeholder="Ej: Lucía" />
+            </div>
+            <div>
+              <label class="form-label">Apellido *</label>
+              <input class="form-input" id="user-apellido" type="text" placeholder="Ej: Méndez" />
+            </div>
+          </div>
+          <div class="form-grid" style="margin-bottom:1rem;">
+            <div>
+              <label class="form-label">DNI *</label>
+              <input class="form-input" id="user-dni" type="text" placeholder="Ej: 45.123.456" />
+            </div>
+            <div>
+              <label class="form-label">Correo</label>
+              <input class="form-input" id="user-email" type="email" placeholder="alumno@gmail.com" />
+            </div>
+          </div>
+          <div class="form-grid" style="margin-bottom:1rem;">
+            <div>
+              <label class="form-label">Teléfono</label>
+              <input class="form-input" id="user-tel" type="text" placeholder="Ej: 11-2345-6789" />
+            </div>
+            <div>
+              <label class="form-label">Curso *</label>
+              <select class="form-input form-select" id="user-curso">
+                <option value="">Seleccioná curso</option>
+              </select>
+            </div>
+            <div>
+              <label class="form-label">Año lectivo</label>
+              <select class="form-input form-select" id="user-anio">
+                <option>2025</option><option>2026</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-grid" style="margin-bottom:1rem;">
+            <div style="grid-column:1/-1;">
+              <label class="form-label">Domicilio</label>
+              <input class="form-input" id="user-dom" type="text" placeholder="Calle, número, localidad" />
+            </div>
+          </div>
+          <div style="display:flex;gap:.75rem;">
+            <button class="btn btn-primary" onclick="procesarGuardadoUsuario()">✔ Crear Usuario</button>
+            <button class="btn btn-ghost" onclick="limpiarFormularioUsuario()">↺ Limpiar</button>
+          </div>
+        </div>
+
+        <div class="filter-bar" style="margin-bottom:1rem;">
+          <div class="search-wrap" style="max-width:320px;">
+            <span class="search-icon">🔍</span>
+            <input class="form-input" id="user-search" type="text" placeholder="Buscar usuarios…" oninput="renderUsuarios()" />
+          </div>
+        </div>
+
+        <div class="card" style="padding:0;overflow:hidden;">
+          <table class="data-table" id="user-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Nombre</th>
+                <th>DNI</th>
+                <th>Email</th>
+                <th>Teléfono</th>
+                <th>Curso</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="user-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ===================== CATEGORÍAS ===================== -->
+      <div class="section" id="sec-categorias">
+        <div class="card" style="max-width:640px;margin-bottom:1.5rem;">
+          <h2 style="font-family:'DM Serif Display',serif;font-size:1.1rem;margin-bottom:1.25rem;">Nueva categoría</h2>
+          <div style="display:flex;flex-direction:column;gap:.75rem;">
+            <div class="form-grid">
+              <div>
+                <label class="form-label">Nombre *</label>
+                <input class="form-input" id="cat-nombre" type="text" placeholder="Ej: Filosofía" />
+              </div>
+              <div>
+                <label class="form-label">Descripción</label>
+                <input class="form-input" id="cat-desc" type="text" placeholder="Ej: Ética, lógica y pensamiento crítico" />
+              </div>
+            </div>
+            <div>
+              <label class="form-label">Color</label>
+              <div id="cat-color-grid" style="display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.5rem;"></div>
+              <input class="form-input" id="cat-color-input" type="text" placeholder="#2563eb" style="max-width:140px;font-family:monospace;" />
+            </div>
+            <div>
+              <label class="form-label">URL de imagen (para el carrusel)</label>
+              <input class="form-input" id="cat-imagen" type="url" placeholder="https://images.unsplash.com/..." />
+            </div>
+            <div>
+              <button class="btn btn-primary" onclick="procesarGuardadoCategoria()">➕ Agregar categoría</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="padding:0;overflow:hidden;max-width:640px;">
+          <table class="data-table" id="cat-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Libros</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="cat-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ===================== ESTADÍSTICAS ===================== -->
+      <div class="section" id="sec-estadisticas">
+          <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-label">Lecturas totales</div>
+            <div class="kpi-value" id="stat-total-loans">0</div>
+            <div class="kpi-sub">Total de préstamos registrados</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Categoría top</div>
+            <div class="kpi-value" id="stat-top-category" style="font-size:1.5rem;padding-top:.25rem;">Sin datos</div>
+            <div class="kpi-sub">Más prestada en el periodo</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Devoluciones en término</div>
+            <div class="kpi-value" id="stat-on-time" style="color:var(--success);">0%</div>
+            <div class="kpi-sub">Porcentaje de préstamos devueltos</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Alumnos activos</div>
+            <div class="kpi-value" id="stat-active-students">0</div>
+            <div class="kpi-sub">Usuarios con préstamos registrados</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2 style="font-family:'DM Serif Display',serif;font-size:1.1rem;margin-bottom:1.5rem;">Préstamos por mes · Ene – Jun 2025</h2>
+          <div class="chart-wrap" id="chart-bars">
+            <div class="chart-axis"></div>
+          </div>
+          <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-top:2rem;">
+            <div style="display:flex;align-items:center;gap:.5rem;font-size:.8rem;color:var(--muted);">
+              <span style="width:14px;height:14px;border-radius:4px;background:#dbeafe;display:inline-block;"></span>
+              Meses anteriores
+            </div>
+            <div style="display:flex;align-items:center;gap:.5rem;font-size:.8rem;color:var(--muted);">
+              <span style="width:14px;height:14px;border-radius:4px;background:var(--brand);display:inline-block;"></span>
+              Mayo (récord)
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /page-content -->
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- MODAL EDITAR CATEGORÍA -->
+<div id="modal-edit-cat" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.4);align-items:center;justify-content:center;" onclick="cerrarModalCategoria(event)">
+  <div style="background:#fff;border-radius:18px;padding:2rem;max-width:480px;width:95%;box-shadow:0 32px 80px rgba(0,0,0,.2);" onclick="event.stopPropagation()">
+    <h2 style="font-family:'DM Serif Display',serif;font-size:1.2rem;margin-bottom:1.25rem;">Editar categoría</h2>
+    <input type="hidden" id="edit-cat-id" />
+    <div style="display:flex;flex-direction:column;gap:.75rem;">
+      <div>
+        <label class="form-label">Nombre *</label>
+        <input class="form-input" id="edit-cat-nombre" type="text" />
+      </div>
+      <div>
+        <label class="form-label">Descripción</label>
+        <input class="form-input" id="edit-cat-desc" type="text" placeholder="Ej: Filosofía, ética y pensamiento crítico" />
+      </div>
+      <div>
+        <label class="form-label">Color</label>
+        <div id="edit-cat-color-grid" style="display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.5rem;"></div>
+        <input class="form-input" id="edit-cat-color-input" type="text" placeholder="#2563eb" style="max-width:140px;font-family:monospace;" />
+      </div>
+      <div>
+        <label class="form-label">URL de imagen (para el carrusel)</label>
+        <input class="form-input" id="edit-cat-imagen" type="url" placeholder="https://images.unsplash.com/..." />
+      </div>
+    </div>
+    <div style="display:flex;gap:.75rem;margin-top:1.25rem;">
+      <button class="btn btn-primary" onclick="guardarEdicionCategoria()">💾 Guardar cambios</button>
+      <button class="btn btn-ghost" onclick="document.getElementById('modal-edit-cat').style.display='none'">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL EDITAR USUARIO -->
+<div id="modal-edit-usuario" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.4);align-items:center;justify-content:center;" onclick="cerrarModalUsuario(event)">
+  <div style="background:#fff;border-radius:18px;padding:2rem;max-width:520px;width:95%;box-shadow:0 32px 80px rgba(0,0,0,.2);" onclick="event.stopPropagation()">
+    <h2 style="font-family:'DM Serif Display',serif;font-size:1.2rem;margin-bottom:1.25rem;">Editar usuario</h2>
+    <input type="hidden" id="edit-user-id" />
+    <div style="display:flex;flex-direction:column;gap:.75rem;">
+      <div class="form-grid">
+        <div>
+          <label class="form-label">Nombre *</label>
+          <input class="form-input" id="edit-user-nombre" type="text" />
+        </div>
+        <div>
+          <label class="form-label">Apellido *</label>
+          <input class="form-input" id="edit-user-apellido" type="text" />
+        </div>
+      </div>
+      <div class="form-grid">
+        <div>
+          <label class="form-label">DNI *</label>
+          <input class="form-input" id="edit-user-dni" type="text" />
+        </div>
+        <div>
+          <label class="form-label">Correo</label>
+          <input class="form-input" id="edit-user-email" type="email" />
+        </div>
+      </div>
+      <div class="form-grid">
+        <div>
+          <label class="form-label">Teléfono</label>
+          <input class="form-input" id="edit-user-tel" type="text" />
+        </div>
+        <div>
+          <label class="form-label">Curso *</label>
+          <select class="form-input form-select" id="edit-user-curso"></select>
+        </div>
+      </div>
+      <div>
+        <label class="form-label">Domicilio</label>
+        <input class="form-input" id="edit-user-dom" type="text" />
+      </div>
+    </div>
+    <div style="display:flex;gap:.75rem;margin-top:1.25rem;">
+      <button class="btn btn-primary" onclick="guardarEdicionUsuario()">💾 Guardar cambios</button>
+      <button class="btn btn-ghost" onclick="document.getElementById('modal-edit-usuario').style.display='none'">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL EDITAR LIBRO -->
+<div id="modal-edit" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.4);display:none;align-items:center;justify-content:center;" onclick="closeModal(event)">
+  <div style="background:#fff;border-radius:18px;padding:2rem;max-width:480px;width:95%;box-shadow:0 32px 80px rgba(0,0,0,.2);" onclick="event.stopPropagation()">
+    <h2 style="font-family:'DM Serif Display',serif;font-size:1.2rem;margin-bottom:1.25rem;">Editar libro</h2>
+    <input type="hidden" id="edit-id" />
+    <div style="display:flex;flex-direction:column;gap:.75rem;">
+      <div>
+        <label class="form-label">Título</label>
+        <input class="form-input" id="edit-titulo" type="text" />
+      </div>
+      <div>
+        <label class="form-label">Autor</label>
+        <input class="form-input" id="edit-autor" type="text" />
+      </div>
+      <div class="form-grid">
+        <div>
+          <label class="form-label">Categoría</label>
+          <select class="form-input form-select" id="edit-cat">
+            <option>Ciencias</option><option>Literatura</option>
+            <option>Informática</option><option>Historia</option><option>Matemáticas</option>
+          </select>
+        </div>
+        <div>
+          <label class="form-label">Stock</label>
+          <input class="form-input" id="edit-stock" type="number" min="0" />
+        </div>
+      </div>
+      <div>
+        <label class="form-label">ISBN</label>
+        <input class="form-input" id="edit-isbn" type="text" />
+      </div>
+      <div>
+        <label class="form-label">Link PDF / Drive</label>
+        <input class="form-input" id="edit-url" type="url" placeholder="https://drive.google.com/..." />
+      </div>
+      <div>
+        <label class="form-label">Palabras clave</label>
+        <input class="form-input" id="edit-keywords" type="text" placeholder="Ej: guerra, historia, siglo XX" />
+      </div>
+    </div>
+    <div style="display:flex;gap:.75rem;margin-top:1.25rem;">
+      <button class="btn btn-primary" onclick="guardarEdicion()">💾 Guardar cambios</button>
+      <button class="btn btn-ghost" onclick="document.getElementById('modal-edit').style.display='none'">Cancelar</button>
+    </div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script src="assets/js/db.js"></script>
+<script src="assets/js/login.js"></script>
+<script src="assets/js/estadisticas.js"></script>
+<script src="assets/js/inventario.js"></script>
+<script src="assets/js/categorias.js"></script>
+<script src="assets/js/navegacion.js"></script>
+<script src="assets/js/prestamos.js"></script>
+<script src="assets/js/usuarios.js"></script>
+<script src="assets/js/script.js"></script>
+
+</body>
+</html>

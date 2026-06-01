@@ -1,0 +1,25 @@
+
+    :root {
+      --bg: #f0f4f8;
+      --sidebar: #0f2137;
+      --sidebar-accent: #1a3350;
+      --brand: #2563eb;
+      --brand-light: #dbeafe;
+      --text: #1e293b;
+      --muted: #64748b;
+      --surface: #ffffff;
+      --border: #e2e8f0;
+      --success: #10b981;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    
+

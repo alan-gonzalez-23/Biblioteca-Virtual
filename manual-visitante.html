@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Manual de Usuario · Visitante · Biblioteca EEST N°5</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --brand: #2563eb;
+      --brand-light: #dbeafe;
+      --text: #1e293b;
+      --muted: #64748b;
+      --bg: #f8fafc;
+      --white: #ffffff;
+      --border: #e2e8f0;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --radius: 14px;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    /* ── SIDEBAR ── */
+    .layout { display: flex; min-height: 100vh; }
+
+    .sidebar {
+      width: 260px;
+      background: var(--white);
+      border-right: 1px solid var(--border);
+      padding: 2rem 1.25rem;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      flex-shrink: 0;
+    }
+
+    .sidebar-logo {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      margin-bottom: 2rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .sidebar-logo .badge {
+      width: 38px; height: 38px;
+      background: var(--brand);
+      color: #fff;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    .sidebar-logo h2 { font-size: .85rem; font-weight: 600; line-height: 1.3; }
+    .sidebar-logo p { font-size: .72rem; color: var(--muted); }
+
+    .sidebar-section { font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 1.25rem 0 .5rem; }
+
+    .sidebar a {
+      display: block;
+      padding: .45rem .75rem;
+      border-radius: 8px;
+      font-size: .85rem;
+      color: var(--text);
+      text-decoration: none;
+      transition: background .15s;
+    }
+    .sidebar a:hover { background: var(--brand-light); color: var(--brand); }
+
+    .badge-visitante {
+      display: inline-block;
+      background: #dcfce7;
+      color: #15803d;
+      font-size: .7rem;
+      font-weight: 700;
+      padding: .2rem .6rem;
+      border-radius: 99px;
+      margin-bottom: 1.5rem;
+    }
+
+    /* ── MAIN ── */
+    .main {
+      flex: 1;
+      padding: 3rem 3.5rem;
+      max-width: 860px;
+    }
+
+    /* ── COVER ── */
+    .cover {
+      background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 60%, #3b82f6 100%);
+      border-radius: 20px;
+      padding: 3rem;
+      color: #fff;
+      margin-bottom: 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .cover::after {
+      content: 'B';
+      position: absolute;
+      right: 2rem; bottom: -1rem;
+      font-family: 'DM Serif Display', serif;
+      font-size: 10rem;
+      opacity: .08;
+      line-height: 1;
+    }
+    .cover .tag { font-size: .75rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; opacity: .7; margin-bottom: .75rem; }
+    .cover h1 { font-family: 'DM Serif Display', serif; font-size: 2.2rem; line-height: 1.2; margin-bottom: .75rem; }
+    .cover p { opacity: .85; font-size: 1rem; max-width: 480px; }
+    .cover .meta { margin-top: 1.75rem; display: flex; gap: 1.5rem; font-size: .8rem; opacity: .7; }
+
+    /* ── SECTIONS ── */
+    .section { margin-bottom: 3.5rem; scroll-margin-top: 2rem; }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: .75rem;
+      border-bottom: 2px solid var(--brand-light);
+    }
+    .section-num {
+      width: 36px; height: 36px;
+      background: var(--brand);
+      color: #fff;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700;
+      font-size: .9rem;
+      flex-shrink: 0;
+    }
+    .section-header h2 { font-family: 'DM Serif Display', serif; font-size: 1.4rem; }
+
+    /* ── IMAGE PLACEHOLDER ── */
+    .img-placeholder {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      height: 260px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: .5rem;
+      color: var(--brand);
+      font-size: .85rem;
+      font-weight: 500;
+      margin: 1.25rem 0;
+      padding: 0;
+      overflow: hidden;
+    }
+    .img-placeholder .icon { font-size: 2rem; }
+    .img-placeholder.sm { height: 180px; }
+    .img-placeholder.lg { height: 340px; }
+    .img-placeholder img { width: 100%; height: 100%; object-fit: contain; border-radius: var(--radius); }
+
+    /* ── STEPS ── */
+    .steps { display: flex; flex-direction: column; gap: 1rem; margin: 1.25rem 0; }
+    .step {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem 1.25rem;
+    }
+    .step-num {
+      width: 30px; height: 30px;
+      background: var(--brand);
+      color: #fff;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700;
+      font-size: .85rem;
+      flex-shrink: 0;
+      margin-top: .1rem;
+    }
+    .step-body strong { display: block; margin-bottom: .25rem; font-size: .95rem; }
+    .step-body p { font-size: .88rem; color: var(--muted); }
+
+    /* ── CALLOUT ── */
+    .callout {
+      border-radius: var(--radius);
+      padding: 1rem 1.25rem;
+      margin: 1.25rem 0;
+      display: flex;
+      gap: .75rem;
+      align-items: flex-start;
+      font-size: .88rem;
+    }
+    .callout.info { background: #eff6ff; border-left: 4px solid var(--brand); color: #1e40af; }
+    .callout.tip { background: #f0fdf4; border-left: 4px solid var(--success); color: #166534; }
+    .callout.warn { background: #fffbeb; border-left: 4px solid var(--warning); color: #92400e; }
+    .callout .icon { font-size: 1.1rem; flex-shrink: 0; margin-top: .05rem; }
+
+    /* ── TABLE ── */
+    table { width: 100%; border-collapse: collapse; margin: 1.25rem 0; font-size: .88rem; }
+    th { background: var(--brand-light); color: var(--brand); font-weight: 700; padding: .6rem 1rem; text-align: left; }
+    td { padding: .6rem 1rem; border-bottom: 1px solid var(--border); }
+    tr:last-child td { border-bottom: none; }
+
+    /* ── CARD GRID ── */
+    .card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1.25rem 0; }
+    .card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+    }
+    .card .card-icon { font-size: 1.5rem; margin-bottom: .5rem; }
+    .card h4 { font-size: .95rem; font-weight: 600; margin-bottom: .35rem; }
+    .card p { font-size: .83rem; color: var(--muted); }
+
+    p { margin-bottom: .75rem; font-size: .93rem; }
+    ul, ol { padding-left: 1.5rem; margin-bottom: .75rem; font-size: .93rem; }
+    li { margin-bottom: .35rem; }
+    strong { font-weight: 600; }
+
+    @media (max-width: 768px) {
+      .layout { flex-direction: column; }
+      .sidebar { width: 100%; height: auto; position: static; }
+      .main { padding: 1.5rem; }
+      .card-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="badge">B</div>
+      <div>
+        <h2>Biblioteca EEST N°5</h2>
+        <p>Manual de Usuario</p>
+      </div>
+    </div>
+
+    <span class="badge-visitante">👤 Para visitantes</span>
+
+    <div class="sidebar-section">Contenido</div>
+    <a href="#intro">Introducción</a>
+    <a href="#sitio">El sitio web</a>
+    <a href="#buscar">Buscar un libro</a>
+    <a href="#catalogo">Explorar y filtrar</a>
+    <a href="#prestamo">Solicitar un préstamo</a>
+    <a href="#estadisticas">Estadísticas</a>
+    <a href="#faq">Preguntas frecuentes</a>
+
+    <div class="sidebar-section">Otros manuales</div>
+    <a href="manual-bibliotecaria.html">📋 Manual Bibliotecaria</a>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- COVER -->
+    <div class="cover">
+      <div class="tag">Biblioteca EEST N°5 · Ranelagh, Berazategui</div>
+      <h1>Manual del Visitante</h1>
+      <p>Guía completa para explorar el catálogo, buscar libros y solicitar préstamos desde el sitio web de la biblioteca.</p>
+      <div class="meta">
+        <span>📅 2025</span>
+        <span>📖 Sitio público</span>
+        <span>🏫 EEST N°5</span>
+      </div>
+    </div>
+
+    <!-- 1. INTRODUCCIÓN -->
+    <div class="section" id="intro">
+      <div class="section-header">
+        <div class="section-num">1</div>
+        <h2>Introducción</h2>
+      </div>
+      <p>El sitio web de la Biblioteca EEST N°5 te permite explorar el catálogo completo de libros disponibles, buscar títulos por nombre o autor, navegar por categorías temáticas y entender cómo funciona el sistema de préstamos.</p>
+      <p>No necesitás crear una cuenta ni iniciar sesión para usar el sitio. Cualquier alumno, docente o visitante puede acceder libremente.</p>
+
+      <div class="callout info">
+        <span class="icon">ℹ️</span>
+        <span>El sitio está optimizado para celulares, tablets y computadoras. Podés usarlo desde cualquier dispositivo.</span>
+      </div>
+
+      <div class="img-placeholder lg">
+        <img src="assets/img/Pantala Principal.PNG" alt="">
+  <!--      <span class="icon">🖼️</span>
+        <span>Captura de pantalla — Vista general del sitio (página de inicio)</span>         -->
+      </div>
+    </div>
+
+    <!-- 2. EL SITIO WEB -->
+    <div class="section" id="sitio">
+      <div class="section-header">
+        <div class="section-num">2</div>
+        <h2>El sitio web</h2>
+      </div>
+      <p>Al ingresar al sitio encontrás las siguientes secciones principales, accesibles desde el menú de navegación superior:</p>
+
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-icon">🏠</div>
+          <h4>Inicio</h4>
+          <p>Página principal con el buscador rápido y acceso a todas las secciones.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">🏷️</div>
+          <h4>Categorías</h4>
+          <p>Carrusel visual con todas las categorías temáticas disponibles.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">📚</div>
+          <h4>Catálogo</h4>
+          <p>Listado completo de libros con filtros por categoría y disponibilidad.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">❓</div>
+          <h4>¿Cómo funciona?</h4>
+          <p>Explicación paso a paso del proceso de préstamo.</p>
+        </div>
+      </div>
+
+      <div class="img-placeholder">
+        <img src="assets/img/public header.PNG" alt="Barra de navegación superior del sitio">
+        <span>Captura de pantalla — Barra de navegación superior</span>
+      </div>
+
+      <div class="callout tip">
+        <span class="icon">💡</span>
+        <span>En celular, el menú se colapsa en un botón ☰ en la esquina superior derecha. Tocalo para ver todas las secciones.</span>
+      </div>
+    </div>
+
+    <!-- 3. BUSCAR UN LIBRO -->
+    <div class="section" id="buscar">
+      <div class="section-header">
+        <div class="section-num">3</div>
+        <h2>Buscar un libro</h2>
+      </div>
+      <p>En la sección de inicio hay un buscador rápido destacado. Podés escribir el título del libro, el nombre del autor o una palabra clave relacionada con el tema.</p>
+
+      <div class="img-placeholder lg">
+        <img src="assets/img/Pantala Principal.PNG" alt="Buscador principal en la sección Hero">
+        <span>Captura de pantalla — Buscador principal en la sección Hero</span>
+      </div>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <strong>Escribí en el buscador</strong>
+            <p>Ingresá el título, autor o palabra clave. Por ejemplo: "Historia de Roma", "Borges" o "algoritmos".</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <strong>Presioná "Buscar →" o Enter</strong>
+            <p>Los resultados aparecen debajo del buscador de forma instantánea.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <strong>Revisá los resultados</strong>
+            <p>Cada resultado muestra el título, autor, categoría y si hay ejemplares disponibles.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout info">
+        <span class="icon">ℹ️</span>
+        <span>La búsqueda también encuentra libros por <strong>palabras clave</strong> que la bibliotecaria cargó al registrar el libro. Por ejemplo, buscar "guerra" puede devolver libros de historia aunque no tengan esa palabra en el título.</span>
+      </div>
+    </div>
+
+    <!-- 4. EXPLORAR Y FILTRAR -->
+    <div class="section" id="catalogo">
+      <div class="section-header">
+        <div class="section-num">4</div>
+        <h2>Explorar el catálogo y filtrar libros</h2>
+      </div>
+      <p>La sección <strong>Catálogo de Libros</strong> muestra todos los títulos disponibles. Podés navegar por <strong>Categorías</strong> (carrusel visual) o usar el catálogo completo con filtros.</p>
+
+      <p><strong>Filtros disponibles:</strong></p>
+      <table>
+        <thead>
+          <tr><th>Filtro</th><th>Descripción</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>🔍 Buscador de texto</td><td>Filtra por título, autor o palabra clave en tiempo real.</td></tr>
+          <tr><td>🏷️ Categoría</td><td>Muestra solo los libros de la categoría seleccionada.</td></tr>
+          <tr><td>📦 Disponibilidad</td><td>Filtra entre "Con stock" (disponibles) y "Sin stock".</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout tip">
+        <span class="icon">💡</span>
+        <span>Combina filtros para buscar más precisamente. Cada tarjeta muestra: título, autor, categoría, cantidad disponible y enlace a PDF/Drive si existe.</span>
+      </div>
+
+      <p><strong>Navegar por categorías:</strong> Un carrusel visual organiza los libros temáticamente. Usá las flechas (← →) o desliza con el dedo en celular para explorar diferentes áreas de conocimiento.</p>
+
+      <div class="callout info">
+        <span class="icon">ℹ️</span>
+        <span>Categorías disponibles: Ciencias, Literatura, Informática, Historia, Matemáticas, y otras que la bibliotecaria haya creado.</span>
+      </div>
+    </div>
+
+    <!-- 5. SOLICITAR UN PRÉSTAMO -->
+    <div class="section" id="prestamo">
+      <div class="section-header">
+        <div class="section-num">5</div>
+        <h2>Solicitar un préstamo</h2>
+      </div>
+      <p>El préstamo se realiza de forma presencial en la biblioteca. El sitio web te ayuda a encontrar el libro que necesitás antes de ir.</p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <strong>Buscá el libro en el sitio</strong>
+            <p>Verificá que tenga stock disponible (el número debe ser mayor a 0).</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <strong>Anotá el título y autor</strong>
+            <p>Escribe los datos para llevarlos cuando vayas a la biblioteca.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <strong>Presentate en la biblioteca con tu DNI</strong>
+            <p>La bibliotecaria registra el préstamo en el sistema con tus datos.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <strong>Retirá el libro</strong>
+            <p>Te indicarán la fecha de devolución. Asegurate de devolverlo en término.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout warn">
+        <span class="icon">⚠️</span>
+        <span><strong>Stock 0:</strong> Significa que todos los ejemplares están prestados. Consultá con la bibliotecaria para anotarte en lista de espera.</span>
+      </div>
+    </div>
+
+    <!-- 6. ESTADÍSTICAS E INFORMACIÓN -->
+    <div class="section" id="estadisticas">
+      <div class="section-header">
+        <div class="section-num">6</div>
+        <h2>Estadísticas e información de la biblioteca</h2>
+      </div>
+      <p>Al final del sitio encontrás una sección con estadísticas generales de la biblioteca, actualizadas en tiempo real:</p>
+
+      <table>
+        <thead>
+          <tr><th>Indicador</th><th>Qué muestra</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>📚 Ejemplares disponibles</td><td>Total de libros físicos en la biblioteca.</td></tr>
+          <tr><td>👥 Alumnos registrados</td><td>Cantidad de alumnos con cuenta en el sistema.</td></tr>
+          <tr><td>✅ Devoluciones a tiempo</td><td>Porcentaje de préstamos devueltos en la fecha acordada.</td></tr>
+          <tr><td>🏷️ Categorías temáticas</td><td>Número de categorías disponibles en el catálogo.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 7. FAQ -->
+    <div class="section" id="faq">
+      <div class="section-header">
+        <div class="section-num">7</div>
+        <h2>Preguntas frecuentes</h2>
+      </div>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">?</div>
+          <div class="step-body">
+            <strong>¿Necesito crear una cuenta para ver el catálogo?</strong>
+            <p>No. El catálogo es público y no requiere registro. Solo necesitás presentarte en la biblioteca con tu DNI para hacer un préstamo.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">?</div>
+          <div class="step-body">
+            <strong>¿Puedo reservar un libro desde el sitio?</strong>
+            <p>Por ahora no. El préstamo se registra de forma presencial. Podés verificar la disponibilidad online y luego ir a la biblioteca.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">?</div>
+          <div class="step-body">
+            <strong>¿Qué significa el link "PDF / Drive" en un libro?</strong>
+            <p>Algunos libros tienen una versión digital disponible en Google Drive. Si aparece ese link, podés acceder al contenido digital además del ejemplar físico.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">?</div>
+          <div class="step-body">
+            <strong>¿Cómo sé si un libro está disponible?</strong>
+            <p>En el catálogo, cada libro muestra su stock. Si el número es mayor a 0, hay ejemplares disponibles para préstamo.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">?</div>
+          <div class="step-body">
+            <strong>¿Dónde está la biblioteca?</strong>
+            <p>Calle 316 S/N esq. 368 B, Barrio Luz, Ranelagh, Berazategui. Teléfono: 4258-4356. Email: eestn5berazategui@gmail.com</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+</body>
+</html>

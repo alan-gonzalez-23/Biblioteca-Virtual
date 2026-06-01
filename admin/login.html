@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="assets/css/syle.css">
+    <link rel="stylesheet" href="assets/css/login.css">
+</head>
+<body>
+    <div id="login-screen">
+  <div class="card">
+    <div class="logo-badge">B</div>
+    <h1>Panel Bibliotecaria</h1>
+    <p>EEST N°5 · Ranelagh, Berazategui</p>
+    <label class="login-label" for="usr">Usuario</label>
+    <input class="login-input" id="usr" type="text" placeholder="bibliotecaria" autocomplete="username" />
+    <label class="login-label" for="pwd">Contraseña</label>
+    <input class="login-input" id="pwd" type="password" placeholder="••••••••" autocomplete="current-password" />
+    <button class="btn-login" onclick="doLogin()">Ingresar al Panel</button>
+    <div id="login-error">Usuario o contraseña incorrectos.</div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/db.js"></script>
+<script src="assets/js/login.js"></script>
+</body>
+</html>
