@@ -465,6 +465,8 @@ async function enviarRecordatorios() {
       ? `VENCIDO hace ${Math.abs(diasRestantes)} día(s)`
       : `vence en ${diasRestantes} día(s) (${formatDate(p.fechaDevolucion)})`;
 
+      alert(p.email);
+
     await emailjs.send(EMAILJS_SERVICE, EMAILJS_TEMPLATE, {
       to_email:  p.email,
       to_name:   p.nombre,
