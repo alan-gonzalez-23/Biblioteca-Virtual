@@ -18,3 +18,8 @@ function showSection(name, el) {
   document.getElementById('topbar-title').textContent = sectionTitles[name];
   if (name === 'alta') populateLibroSelect();
 }
+
+function toggleSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  sidebar.classList.toggle('active');
+}
